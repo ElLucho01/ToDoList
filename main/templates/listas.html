@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %} Tus Listas {% endblock %}
+{% block content %} 
+<h2 text-center fs-3> Tus Listas </h1>
+<ul class="list-group w-50 mx-auto m-4">
+    {% for lista in ls %}
+        <li class="list-group-item"><a href={{lista.id}}>{{lista.name}}</a></li>
+    {% endfor %}    
+</ul>
+<h2>Crear Nueva Lista</h1>
+
+<form method = "POST" action = "#">
+    {% csrf_token %}
+    <input type="text", name="name", placeholder="Nombre de la lista">
+    <button type="Submit", name="newList", value="newList">Crear Lista</button>
+{% endblock %}  
