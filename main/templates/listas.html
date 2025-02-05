@@ -4,7 +4,12 @@
 <h2 text-center fs-3> Tus Listas </h1>
 <ul class="list-group w-50 mx-auto m-4">
     {% for lista in ls %}
-        <li class="list-group-item"><a href={{lista.id}}>{{lista.name}}</a></li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <a href={{lista.id}} class="link-body-emphasis link-underline-opacity-0 link-underline-opacity-75-hover">{{lista.name}}</a>
+            <a href="rmLista/{{lista.id}}">
+                <button type="button"class="btn btn-danger me-md-2" name="c{{lista.id}}">Eliminar</button>
+            </a>
+        </li>
     {% endfor %}    
 </ul>
 <h2>Crear Nueva Lista</h1>

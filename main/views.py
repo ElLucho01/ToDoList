@@ -11,16 +11,29 @@ def home(request):
 def listas(response):
     ls = Lista.objects.all()
     if response.method == "POST":
-        if len(response.POST["name"]) > 2:
-            t = Lista(name=response.POST["name"])
-            t.save()
-        return HttpResponseRedirect(".")
+        if(response.POST.get("newList")):
+            if len(response.POST["name"]) > 2:
+                t = Lista(name=response.POST["name"])
+                t.save()
+            return HttpResponseRedirect(".") # This is to avoid the form resubmission warning
     else:
         form = CreateNewList()
     return render(response, 'listas.html', {"form": form, "ls": ls})
+
+def remLista(response, id):
+    ls = Lista.objects.get(id=id)
+    if response.method == "GET":
+        ls.delete()
+    return HttpResponseRedirect("/listas/")
 
 def lista(response, id):
     ls = Lista.objects.get(id=id)
     if response.method == "POST":
         ls.item_set.create(text=response.POST["name"], complete=False)
     return render(response, 'lista.html', {"ls": ls})
+
+def rmItem(response, id, item):
+    ls = Lista.objects.get(id=id)
+    if response.method == "GET":
+        ls.item_set.get(id=item).delete()
+    return HttpResponseRedirect("/listas/" + str(id))
