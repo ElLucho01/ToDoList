@@ -1,21 +1,45 @@
 {% extends "base.html" %}
+{% load static %}
+
 {% block title %} Tus Listas {% endblock %}
 {% block content %} 
-<h2 text-center fs-3> {{ls.name}} </h1>
-<ul class="list-group w-50 mx-auto m-4">
+<h2 text-center fs-3 class="mx-2"> {{ls.name}} </h1>
+<ul class="list-group w-50 mx-auto my-4">
+    <form action="#" method="POST"></form>
+    {% csrf_token %}
     {% for item in ls.item_set.all %}
+        {% if item.complete == False%}
         <li class="list-group-item d-flex justify-content-between align-items-center">
             {{item.text}}
-            <a href="{{ls.id}}/rmItem/{{item.id}}">
-                <button type="button" class="btn btn-danger me-md-2" name="c{{item.id}}">Eliminar</button>
-            </a>
+            <div>
+                <input class="form-check-input check mx-2" type="checkbox" value="clicked" name="c{{item.id}}">
+                <a href="{{ls.id}}/rmItem/{{item.id}}">
+                    <button type="button" class="btn btn-danger btn-sm me-md-2" name="c{{item.id}}">Eliminar</button>
+                </a>
+            </div>
         </li>
-    {% endfor %}    
+        {% endif %}
+    {% endfor %}  
+    {% for item in ls.item_set.all %}
+        {% if item.complete == True%}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <p style="text-decoration: line-through; margin: 0;">{{item.text}}</p>
+            <div>
+                <input class="form-check-input check mx-2" type="checkbox" value="clicked" name="c{{item.id}}" checked>
+                <a href="{{ls.id}}/rmItem/{{item.id}}">
+                    <button type="button" class="btn btn-danger btn-sm me-md-2" name="d{{item.id}}">Eliminar</button>
+                </a>
+            </div>
+        </li>
+        {% endif %}
+    {% endfor %}
 </ul>
 
-<h2>Añadir tarea</h1>
-<form method = "POST" action = "#">
-    {% csrf_token %}
-    <input type="text", name="name", placeholder="Nombre de la tarea">
-    <button type="Submit", name="newTask", value="newTask">Añadir Tarea</button>
+<div class="mx-2 my-4">
+    <h2>Añadir tarea</h1>
+    <form method = "POST" action = "#">
+        {% csrf_token %}
+        <input type="text", name="name", placeholder="Nombre de la tarea">
+        <button type="Submit", name="newTask", value="newTask" class="submit">Añadir Tarea</button>
+</div>
 {% endblock %}  

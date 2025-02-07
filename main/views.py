@@ -6,7 +6,7 @@ from .forms import CreateNewList
 # Create your views here.
 
 def home(request):
-    return render(request, 'home.html')
+    return HttpResponseRedirect("/listas/")
 
 def listas(response):
     ls = Lista.objects.all()
@@ -16,6 +16,10 @@ def listas(response):
                 t = Lista(name=response.POST["name"])
                 t.save()
             return HttpResponseRedirect(".") # This is to avoid the form resubmission warning
+        elif(response.POST.get("deleteList")):
+            for lista in ls:
+                if response.POST.get("c" + str(lista.id)):
+                    lista.delete()
     else:
         form = CreateNewList()
     return render(response, 'listas.html', {"form": form, "ls": ls})
@@ -36,4 +40,15 @@ def rmItem(response, id, item):
     ls = Lista.objects.get(id=id)
     if response.method == "GET":
         ls.item_set.get(id=item).delete()
+    return HttpResponseRedirect("/listas/" + str(id))
+
+def togItem(response, id, item):
+    ls = Lista.objects.get(id=id)
+    if response.method == "GET":
+        i = ls.item_set.get(id=item)
+        if(i.complete == False):
+            i.complete = True
+        else:
+            i.complete = False
+        i.save()
     return HttpResponseRedirect("/listas/" + str(id))

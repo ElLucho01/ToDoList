@@ -8,4 +8,5 @@ urlpatterns = [
     path('listas/<int:id>', views.lista, name='lista'),
     path('listas/rmLista/<int:id>', views.remLista, name='rmLista'),
     path('listas/<int:id>/rmItem/<int:item>', views.rmItem, name='rmItem'),
+    path('listas/<int:id>/togItem/<int:item>', views.togItem, name='togItem'),
 ]

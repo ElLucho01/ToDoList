@@ -1,0 +1,21 @@
+.navbar{
+    background-color: #212121;
+}
+
+body{
+    background-color: #EEEEEE;
+}
+
+h1, h2 {
+    color: #3D3D3D;
+}
+
+.submit {
+    background-color: #212121;
+    color: white;
+    border-radius: 6px;
+}
+
+* {
+    font-family: 'Roboto', sans-serif;
+}
