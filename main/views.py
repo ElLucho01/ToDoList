@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from .models import Lista
+from django.contrib.auth.models import User
 from .forms import CreateNewList
 
 # Create your views here.
@@ -9,20 +10,23 @@ def home(request):
     return HttpResponseRedirect("/listas/")
 
 def listas(response):
-    ls = Lista.objects.all()
-    if response.method == "POST":
-        if(response.POST.get("newList")):
-            if len(response.POST["name"]) > 2:
-                t = Lista(name=response.POST["name"])
-                t.save()
-            return HttpResponseRedirect(".") # This is to avoid the form resubmission warning
-        elif(response.POST.get("deleteList")):
-            for lista in ls:
-                if response.POST.get("c" + str(lista.id)):
-                    lista.delete()
+    if response.user.is_authenticated:
+        ls = Lista.objects.filter(user=response.user)
+        if response.method == "POST":
+            if(response.POST.get("newList")):
+                if len(response.POST["name"]) > 2:
+                    n = response.POST["name"]
+                    t = Lista(name=n)
+                    t.save()
+                    response.user.listas.add(t)
+                    return HttpResponseRedirect(".") # This is to avoid the form resubmission warning
+            elif(response.POST.get("deleteList")):
+                for lista in ls:
+                    if response.POST.get("c" + str(lista.id)):
+                        lista.delete()
     else:
-        form = CreateNewList()
-    return render(response, 'listas.html', {"form": form, "ls": ls})
+        return HttpResponseRedirect("/login")
+    return render(response, 'main/listas.html', {"ls": ls})
 
 def remLista(response, id):
     ls = Lista.objects.get(id=id)
@@ -34,7 +38,7 @@ def lista(response, id):
     ls = Lista.objects.get(id=id)
     if response.method == "POST":
         ls.item_set.create(text=response.POST["name"], complete=False)
-    return render(response, 'lista.html', {"ls": ls})
+    return render(response, 'main/lista.html', {"ls": ls})
 
 def rmItem(response, id, item):
     ls = Lista.objects.get(id=id)
