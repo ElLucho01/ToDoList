@@ -146,9 +146,9 @@ LOGIN_REDIRECT_URL = '/'
 
 LOGOUT_REDIRECT_URL = '/'
     
-ALLOWED_HOSTS = ['web-production-3ce4.up.railway.app']
+ALLOWED_HOSTS = ['*', 'web-production-3ce4.up.railway.app']
 
-CSRF_TRUSTED_ORIGINS = ['http://web-production-3ce4.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['http://web-production-3ce4.up.railway.app', 'http://*', 'https://*']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
