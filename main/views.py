@@ -16,9 +16,9 @@ def listas(response):
             if(response.POST.get("newList")):
                 if len(response.POST["name"]) > 2:
                     n = response.POST["name"]
-                    t = Lista(name=n)
+                    user = User.objects.get(id=response.user.id)
+                    t = Lista(name=n, user=user)
                     t.save()
-                    response.user.listas.add(t)
                     return HttpResponseRedirect(".") # This is to avoid the form resubmission warning
             elif(response.POST.get("deleteList")):
                 for lista in ls:
