@@ -2,7 +2,6 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from .models import Lista
 from django.contrib.auth.models import User
-from .forms import CreateNewList
 
 # Create your views here.
 
@@ -36,23 +35,40 @@ def remLista(response, id):
 
 def lista(response, id):
     ls = Lista.objects.get(id=id)
-    if response.method == "POST":
-        ls.item_set.create(text=response.POST["name"], complete=False)
-    return render(response, 'main/lista.html', {"ls": ls})
+    if(response.user.is_authenticated):
+        if(ls.user.id == response.user.id):
+            if response.method == "POST":
+                ls.item_set.create(text=response.POST["name"], complete=False)
+                return HttpResponseRedirect("/listas/"+str(id))
+            return render(response, 'main/lista.html', {"ls": ls})
+        else:
+            return HttpResponseRedirect("/listas/")
+    else:
+        return HttpResponseRedirect("/login")
 
 def rmItem(response, id, item):
     ls = Lista.objects.get(id=id)
-    if response.method == "GET":
-        ls.item_set.get(id=item).delete()
-    return HttpResponseRedirect("/listas/" + str(id))
+    if(response.user.is_authenticated):
+        if(ls.user.id == response.user.id):
+            if response.method == "GET":
+                ls.item_set.get(id=item).delete()
+            return HttpResponseRedirect("/listas/" + str(id))
+        return HttpResponseRedirect("/listas")
+    return HttpResponseRedirect("/login")
 
 def togItem(response, id, item):
     ls = Lista.objects.get(id=id)
-    if response.method == "GET":
-        i = ls.item_set.get(id=item)
-        if(i.complete == False):
-            i.complete = True
+    if(response.user.is_authenticated):
+        if(ls.user.id == response.user.id):
+            if response.method == "GET":
+                i = ls.item_set.get(id=item)
+                if(i.complete == False):
+                    i.complete = True
+                else:
+                    i.complete = False
+                i.save()
+                return HttpResponseRedirect("/listas/" + str(id))
         else:
-            i.complete = False
-        i.save()
-    return HttpResponseRedirect("/listas/" + str(id))
+            return HttpResponseRedirect("/listas")
+    else:
+        return HttpResponseRedirect("/login")
