@@ -1,1 +1,1 @@
-web: gunicorn todo.wsgi
+web: python manage.py collectstatic && gunicorn todo.wsgi
